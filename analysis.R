@@ -12,7 +12,7 @@ library(zoo)
 library(astsa)
 
 # Read the data 
-coffee_data <- read_excel("C:/Users/Hp/Desktop/TS_Project/Coffee.xlsx", sheet = "R2") 
+coffee_data <- read.csv("data/coffee_imports_pt.csv")
 
 # Convert to time series
 coffee_ts <- ts(coffee_data$Quantity, frequency=12, start=c(2005,1))
@@ -272,10 +272,9 @@ sarima4 <- sarima(train,2,1,1,0,0,2,12)
 # Check residuals
 #checkresiduals(sarima1)
 #Box.test(residuals(sarima1), type = "Ljung-Box", lag = 12)  
-shapiro.test(residuals(model_train)) 
-
-# Select best model based on AIC and residual diagnostics
-best_model <- sarima1 # or choose manually if better
+#Box.test(residuals(sarima2), type = "Ljung-Box", lag = 12) 
+#Box.test(residuals(sarima3), type = "Ljung-Box", lag = 12) 
+#Box.test(residuals(sarima4), type = "Ljung-Box", lag = 12) 
 
 # 4.3 Model Validation
 
@@ -290,6 +289,10 @@ S <- 12
 # Fit model to training data 
 model_train <- Arima(train, order = c(p, d, q),
                      seasonal = list(order = c(P, D, Q), period = S))
+
+shapiro.test(residuals(model_train)) 
+
+best_model <- model_train
 
 # Forecast and compare with test set
 forecast_train <- forecast(model_train, h = length(test))
@@ -318,7 +321,7 @@ accuracy(fc_ses, test)
 accuracy(fc_holt, test)
 accuracy(fc_hw_add, test)
 accuracy(fc_hw_mult, test)
-accuracy(fc_arima, test)
+accuracy(fc_sarima, test)
 
 # Plot comparison
 autoplot(train) +
@@ -326,7 +329,7 @@ autoplot(train) +
   autolayer(fc_holt, series="Holt", PI=FALSE) +
   autolayer(fc_hw_add, series="HW Add", PI=FALSE) +
   autolayer(fc_hw_mult, series="HW Mult", PI=FALSE) +
-  autolayer(fc_arima, series="SARIMA", PI=FALSE) +
+  autolayer(fc_sarima, series="SARIMA", PI=FALSE) +
   ggtitle("Forecast Comparison") +
   ylab("Quantity (kg)") +
   guides(colour=guide_legend(title="Method")) + coord_cartesian(xlim = c(2018, 2020))
@@ -339,12 +342,10 @@ autoplot(final_forecast) +
   ggtitle("Final SARIMA Forecast with 95% Prediction Intervals") +
   ylab("Quantity (kg)") + coord_cartesian(xlim = c(2018, 2020))
 
-'''
-autoplot(window(train, start=c(2016))) + 
-  autolayer(final_forecast, series="2019 Forecast") + 
-  ggtitle("Forecast for 2019 vs Actual") +
-  ylab("Quantity (kg)")
-'''
+# autoplot(window(train, start=c(2016))) + 
+#   autolayer(final_forecast, series="2019 Forecast") + 
+#   ggtitle("Forecast for 2019 vs Actual") +
+#   ylab("Quantity (kg)")
 
 get_metrics <- function(forecast_obj, test_data) {
   acc <- accuracy(forecast_obj, test_data)
@@ -379,3 +380,16 @@ autoplot(train) +
   autolayer(test, series = "Actual") +
   ylab("Quantity (kg)") + 
   coord_cartesian(xlim = c(2018, 2020))
+
+
+autoplot(forecast_train) + 
+  autolayer(test, series = "Actual", color = "red") +
+  coord_cartesian(xlim = c(2018, 2020)) +
+  labs(
+    title = "SARIMA(2,1,1)(1,0,0)[12] Forecast vs 2019 Holdout",
+    x = "Time",
+    y = "Quantity (kg)"
+  ) +
+  theme_minimal()
+
+

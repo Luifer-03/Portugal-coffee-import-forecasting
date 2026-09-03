@@ -87,8 +87,7 @@ Models were trained on 2005–2018 ($n=168$) and validated against the full 12-m
 
 *Insight:* While $\text{SARIMA}(2,1,1)(1,0,0)_{12}$ provides a statistically sound parametric model with white noise residuals, Holt-Winters Additive smoothing yielded superior out-of-sample RMSE and ME due to sharp, high-volatility trade volume swings in early 2019.
 
-![Forecast Comparison](assets/forecast_intervals.png)
-
+![Model Comparison](assets/model_comparison.png)
 ---
 
 ## Project Structure
@@ -97,7 +96,8 @@ Models were trained on 2005–2018 ($n=168$) and validated against the full 12-m
 portugal-coffee-import-forecasting/
 ├── assets/
 │   ├── decomposition_plot.png
-│   └── forecast_intervals.png
+│   ├── forecast_intervals.png
+│   └── model_comparison.png
 ├── data/
 │   └── coffee_imports_pt.csv
 ├── reports/
