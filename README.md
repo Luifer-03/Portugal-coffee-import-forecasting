@@ -21,23 +21,24 @@ The objective of this modeling pipeline is to:
 
 ## Methodological Pipeline
 
+```text
 Raw Data (Monthly kg, 2005–2019)
-│
-▼
+       │
+       ▼
 Decomposition Analysis ────────► Classical Additive/Multiplicative & STL
-│
-▼
+       │
+       ▼
 Stationarity Testing ──────────► ADF & KPSS Tests (d = 1, D = 0)
-│
-▼
+       │
+       ▼
 Model Identification ──────────► ACF/PACF Grid Search & Estimation via AICc
-│
-▼
+       │
+       ▼
 Diagnostic Verification ───────► Ljung-Box Test & Residual Normality Checks
-│
-▼
+       │
+       ▼
 Out-of-Sample Evaluation ──────► Holdout Validation vs Holt-Winters & Decomp
-
+```
 
 ### 1. Trend & Seasonal Decomposition
 Monthly series components were analyzed through Classical Additive, Classical Multiplicative, and Loess-based STL decomposition:
@@ -92,24 +93,16 @@ Models were trained on 2005–2018 ($n=168$) and validated against the full 12-m
 
 ## Project Structure
 
+```text
 portugal-coffee-import-forecasting/
-├── R/
-│   ├── 01_data_loader.R       # Ingests raw Eurostat trade data into ts/tsibble
-│   ├── 02_decomposition.R     # Classical and STL trend-seasonal decomposition
-│   ├── 03_stationarity.R      # ADF & KPSS unit-root tests and differencing
-│   ├── 04_model_selection.R   # Fits candidate SARIMA models and extracts AIC/BIC
-│   ├── 05_diagnostics.R       # Ljung-Box test, ACF plots, normality diagnostics
-│   └── 06_forecasting.R       # Multi-model out-of-sample backtesting (2019)
-├── data/
-│   └── coffee_imports_pt.csv  # Monthly coffee import volumes (2005–2019, kg)
-├── reports/
-│   └── coffee_analysis.Rmd    # Knitting to reproducible HTML/PDF report
 ├── assets/
-│   ├── decomposition_plot.png # STL decomposition graphic
-│   └── forecast_intervals.png # Forecast comparisons and prediction intervals
-├── .gitignore
+│   ├── decomposition_plot.png
+│   └── forecast_intervals.png
+├── data/
+│   └── coffee_imports_pt.csv
+├── reports/
+│   └── final_report.pdf
 ├── LICENSE
 ├── README.md
-├── renv.lock                  # Environment lockfile for reproducibility
-└── main.R                     # Sequential pipeline runner
-
+└── analysis.R
+```
